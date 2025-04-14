@@ -64,7 +64,6 @@ export class GeneService {
         }
     }
 
-    // GeneService
     async findList(names: string[], res: Response) {
         try {
             if (!names || names.length === 0) {
@@ -74,9 +73,8 @@ export class GeneService {
                 });
             }
 
-            // Tìm các gene với tên trong danh sách names
             const geneList = await this.geneModel.find({
-                name: { $in: names }, // Truy vấn theo `name` chứ không phải `_id`
+                name: { $in: names },
             });
 
             return res.json({

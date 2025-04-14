@@ -4,23 +4,23 @@ import { UpdatePanGeneSetDto } from './dto/update-pan_gene_set.dto';
 
 @Injectable()
 export class PanGeneSetService {
-  create(createPanGeneSetDto: CreatePanGeneSetDto) {
-    return 'This action adds a new panGeneSet';
-  }
+    create(createPanGeneSetDto: CreatePanGeneSetDto) {
+        return 'This action adds a new panGeneSet';
+    }
 
-  findAll() {
-    return `This action returns all panGeneSet`;
-  }
+    findAll() {
+        return `This action returns all panGeneSet`;
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} panGeneSet`;
-  }
+    findOne(id: number) {
+        return `This action returns a #${id} panGeneSet`;
+    }
 
-  update(id: number, updatePanGeneSetDto: UpdatePanGeneSetDto) {
-    return `This action updates a #${id} panGeneSet`;
-  }
+    update(id: number, updatePanGeneSetDto: UpdatePanGeneSetDto) {
+        return `This action updates a #${id} panGeneSet`;
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} panGeneSet`;
-  }
+    remove(id: number) {
+        return `This action removes a #${id} panGeneSet`;
+    }
 }

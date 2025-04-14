@@ -10,12 +10,12 @@ export class GeneFunction {
     identifier: string;
 
     @Prop()
-    location?: string;
-
-    @Prop({ type: MongooseSchema.Types.ObjectId, ref: Gene.name, required: true })
-    description: Gene;
+    location: string;
 
     @Prop()
+    description: Gene;
+
+    @Prop({ default: 'Manihot' })
     genus: string;
 
     @Prop()
