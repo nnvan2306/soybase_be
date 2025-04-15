@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Query } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -14,8 +14,8 @@ export class PostController {
     }
 
     @Get()
-    findAll(@Res() res: Response) {
-        return this.postService.findAll(res);
+    findAll(@Res() res: Response, @Query('page') page: string, @Query('pageSize') pageSize: string) {
+        return this.postService.findAll(res, page, pageSize);
     }
 
     @Get(':id')
@@ -24,8 +24,13 @@ export class PostController {
     }
 
     @Get('/type/:type')
-    findByType(@Param('type') type: string, @Res() res: Response) {
-        return this.postService.findByType(type, res);
+    findByType(
+        @Param('type') type: string,
+        @Res() res: Response,
+        @Query('page') page: string,
+        @Query('pageSize') pageSize: string,
+    ) {
+        return this.postService.findByType(type, res, page, pageSize);
     }
 
     @Patch('')

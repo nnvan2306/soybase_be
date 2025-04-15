@@ -31,9 +31,12 @@ export class PostService {
         }
     }
 
-    async findAll(res: Response) {
+    async findAll(res: Response, page: string, pageSize: string) {
         try {
-            const posts = await this.postModel.find();
+            const pageQuery = Number(page) ? Number(page) : 1;
+            const pageSizeQuery = Number(pageSize) ? Number(pageSize) : 10;
+            const skip = (pageQuery - 1) * pageSizeQuery;
+            const posts = await this.postModel.find().skip(skip).limit(pageSizeQuery).exec();
             return res.json(
                 sendResponse({
                     data: posts,
@@ -67,10 +70,13 @@ export class PostService {
         }
     }
 
-    async findByType(type: string, res: Response) {
+    async findByType(type: string, res: Response, page: string, pageSize: string) {
         try {
+            const pageQuery = Number(page) ? Number(page) : 1;
+            const pageSizeQuery = Number(pageSize) ? Number(pageSize) : 10;
+            const skip = (pageQuery - 1) * pageSizeQuery;
             const filter = type ? { type } : {};
-            const posts = await this.postModel.find(filter).exec();
+            const posts = await this.postModel.find(filter).skip(skip).limit(pageSizeQuery).exec();
 
             return res.json(
                 sendResponse({
