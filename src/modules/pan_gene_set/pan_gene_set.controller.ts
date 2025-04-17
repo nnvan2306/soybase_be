@@ -1,34 +1,40 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Query } from '@nestjs/common';
 import { PanGeneSetService } from './pan_gene_set.service';
 import { CreatePanGeneSetDto } from './dto/create-pan_gene_set.dto';
 import { UpdatePanGeneSetDto } from './dto/update-pan_gene_set.dto';
+import { Response } from 'express';
 
 @Controller('pan-gene-set')
 export class PanGeneSetController {
-  constructor(private readonly panGeneSetService: PanGeneSetService) {}
+    constructor(private readonly panGeneSetService: PanGeneSetService) {}
 
-  @Post()
-  create(@Body() createPanGeneSetDto: CreatePanGeneSetDto) {
-    return this.panGeneSetService.create(createPanGeneSetDto);
-  }
+    @Post()
+    create(@Body() createPanGeneSetDto: CreatePanGeneSetDto, @Res() res: Response) {
+        return this.panGeneSetService.create(createPanGeneSetDto, res);
+    }
 
-  @Get()
-  findAll() {
-    return this.panGeneSetService.findAll();
-  }
+    @Get('limit')
+    findLimit(@Res() res: Response, @Query('page') page: string, @Query('pageSize') pageSize: string) {
+        return this.panGeneSetService.findLimit(res, page, pageSize);
+    }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.panGeneSetService.findOne(+id);
-  }
+    @Get('all')
+    findAll(@Res() res: Response) {
+        return this.panGeneSetService.findAll(res);
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePanGeneSetDto: UpdatePanGeneSetDto) {
-    return this.panGeneSetService.update(+id, updatePanGeneSetDto);
-  }
+    @Get(':id')
+    findOne(@Param('id') id: string, @Res() res: Response) {
+        return this.panGeneSetService.findOne(id, res);
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.panGeneSetService.remove(+id);
-  }
+    @Patch(':id')
+    update(@Res() res: Response, @Body() updatePanGeneSetDto: UpdatePanGeneSetDto) {
+        return this.panGeneSetService.update(res, updatePanGeneSetDto);
+    }
+
+    @Delete(':id')
+    remove(@Param('id') id: string, @Res() res: Response) {
+        return this.panGeneSetService.remove(id, res);
+    }
 }

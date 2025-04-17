@@ -30,6 +30,36 @@ export class GeneFamilyService {
             throw new BadRequestException('Có lỗi xảy ra');
         }
     }
+    async findLimit(res: Response, page: string, pageSize: string) {
+        try {
+            const pageQuery = Number(page) ? Number(page) : 1;
+            const pageSizeQuery = Number(pageSize) ? Number(pageSize) : 10;
+            const skip = (pageQuery - 1) * pageSizeQuery;
+            const [data, totalItems] = await Promise.all([
+                this.geneFamilyModel.find().skip(skip).limit(pageSizeQuery).exec(),
+                this.geneFamilyModel.countDocuments(),
+            ]);
+
+            const totalPages = Math.ceil(totalItems / pageSizeQuery);
+
+            return res.json(
+                sendResponse({
+                    data: {
+                        page: pageQuery,
+                        pageSize: pageSizeQuery,
+                        totalItems,
+                        totalPages,
+                        data: data,
+                    },
+                    message: 'success',
+                    statusCode: HttpStatus.OK,
+                }),
+            );
+        } catch (error) {
+            console.log(error);
+            throw new BadRequestException('Có lỗi xảy ra');
+        }
+    }
 
     async findAll(res: Response) {
         try {

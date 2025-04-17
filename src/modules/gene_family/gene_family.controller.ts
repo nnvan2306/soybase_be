@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Query } from '@nestjs/common';
 import { GeneFamilyService } from './gene_family.service';
 import { CreateGeneFamilyDto } from './dto/create-gene_family.dto';
 import { UpdateGeneFamilyDto } from './dto/update-gene_family.dto';
@@ -13,6 +13,10 @@ export class GeneFamilyController {
         return this.geneFamilyService.create(createGeneFamilyDto, res);
     }
 
+    @Get('limit')
+    findLimit(@Res() res: Response, @Query('page') page: string, @Query('pageSize') pageSize: string) {
+        return this.geneFamilyService.findLimit(res, page, pageSize);
+    }
     @Get()
     findAll(@Res() res: Response) {
         return this.geneFamilyService.findAll(res);

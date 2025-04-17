@@ -36,10 +36,21 @@ export class PostService {
             const pageQuery = Number(page) ? Number(page) : 1;
             const pageSizeQuery = Number(pageSize) ? Number(pageSize) : 10;
             const skip = (pageQuery - 1) * pageSizeQuery;
-            const posts = await this.postModel.find().skip(skip).limit(pageSizeQuery).exec();
+            const [posts, totalItems] = await Promise.all([
+                this.postModel.find().skip(skip).limit(pageSizeQuery).exec(),
+                this.postModel.countDocuments(),
+            ]);
+
+            const totalPages = Math.ceil(totalItems / pageSizeQuery);
             return res.json(
                 sendResponse({
-                    data: posts,
+                    data: {
+                        page: pageQuery,
+                        pageSize: pageSizeQuery,
+                        totalItems,
+                        totalPages,
+                        data: posts,
+                    },
                     message: 'success',
                     statusCode: HttpStatus.OK,
                 }),
@@ -76,11 +87,22 @@ export class PostService {
             const pageSizeQuery = Number(pageSize) ? Number(pageSize) : 10;
             const skip = (pageQuery - 1) * pageSizeQuery;
             const filter = type ? { type } : {};
-            const posts = await this.postModel.find(filter).skip(skip).limit(pageSizeQuery).exec();
+            const [posts, totalItems] = await Promise.all([
+                this.postModel.find(filter).skip(skip).limit(pageSizeQuery).exec(),
+                this.postModel.countDocuments(filter),
+            ]);
+
+            const totalPages = Math.ceil(totalItems / pageSizeQuery);
 
             return res.json(
                 sendResponse({
-                    data: posts,
+                    data: {
+                        page: pageQuery,
+                        pageSize: pageSizeQuery,
+                        totalItems,
+                        totalPages,
+                        data: posts,
+                    },
                     message: 'success',
                     statusCode: HttpStatus.OK,
                 }),

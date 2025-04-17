@@ -10,9 +10,6 @@ export class Species {
 
     @Prop()
     gene_id: string[];
-
-    @Prop()
-    gene_family: string;
 }
 
 export const SpeciesSchema = SchemaFactory.createForClass(Species);

@@ -19,6 +19,15 @@ export class Study {
 
     @Prop()
     author: string;
+
+    @Prop()
+    synopsis: string;
+
+    @Prop()
+    description: string;
+
+    @Prop()
+    genotypes: string;
 }
 
 export const StudySchema = SchemaFactory.createForClass(Study);

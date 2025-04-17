@@ -13,6 +13,15 @@ export class PostController {
         return this.postService.create(createPostDto, res);
     }
 
+    @Get('/type')
+    findByType(
+        @Query('type') type: string,
+        @Res() res: Response,
+        @Query('page') page: string,
+        @Query('pageSize') pageSize: string,
+    ) {
+        return this.postService.findByType(type, res, page, pageSize);
+    }
     @Get()
     findAll(@Res() res: Response, @Query('page') page: string, @Query('pageSize') pageSize: string) {
         return this.postService.findAll(res, page, pageSize);
@@ -21,16 +30,6 @@ export class PostController {
     @Get(':id')
     findOne(@Param('id') id: string, @Res() res: Response) {
         return this.postService.findOne(id, res);
-    }
-
-    @Get('/type/:type')
-    findByType(
-        @Param('type') type: string,
-        @Res() res: Response,
-        @Query('page') page: string,
-        @Query('pageSize') pageSize: string,
-    ) {
-        return this.postService.findByType(type, res, page, pageSize);
     }
 
     @Patch('')
