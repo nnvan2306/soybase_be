@@ -28,7 +28,7 @@ export class PanGeneSetController {
         return this.panGeneSetService.findOne(id, res);
     }
 
-    @Patch(':id')
+    @Patch()
     update(@Res() res: Response, @Body() updatePanGeneSetDto: UpdatePanGeneSetDto) {
         return this.panGeneSetService.update(res, updatePanGeneSetDto);
     }

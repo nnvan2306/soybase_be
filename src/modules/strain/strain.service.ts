@@ -1,21 +1,20 @@
 import { BadRequestException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateGeneFunctionDto } from './dto/create-gene-function.dto';
-import { UpdateGeneFunctionDto } from './dto/update-gene-function.dto';
-import { Response } from 'express';
+import { CreateStrainDto } from './dto/create-strain.dto';
+import { UpdateStrainDto } from './dto/update-strain.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { GeneFunction, GeneFunctionDocument } from 'src/schemas/gene-function.schema';
+import { Strain, StrainDocument } from 'src/schemas/strain.schema';
 import { Model } from 'mongoose';
+import { Response } from 'express';
 import { sendResponse } from 'src/helpers/response';
 
 @Injectable()
-export class GeneFunctionService {
-    constructor(@InjectModel(GeneFunction.name) private readonly geneFunctionModel: Model<GeneFunctionDocument>) {}
+export class StrainService {
+    constructor(@InjectModel(Strain.name) private readonly strainModel: Model<StrainDocument>) {}
 
-    async create(geneFunctionData: CreateGeneFunctionDto, res: Response) {
+    async create(CreateStrainDto: CreateStrainDto, res: Response) {
         try {
-            const geneFunction = new this.geneFunctionModel({ ...geneFunctionData });
-
-            await geneFunction.save();
+            const strain = new this.strainModel({ ...CreateStrainDto });
+            await strain.save();
             return res.json(
                 sendResponse({
                     data: null,
@@ -31,10 +30,10 @@ export class GeneFunctionService {
 
     async findAll(res: Response) {
         try {
-            const geneFunctions = await this.geneFunctionModel.find({});
+            const strains = await this.strainModel.find();
             return res.json(
                 sendResponse({
-                    data: geneFunctions,
+                    data: strains,
                     message: 'success',
                     statusCode: HttpStatus.OK,
                 }),
@@ -50,10 +49,10 @@ export class GeneFunctionService {
             if (!id) {
                 throw new NotFoundException('Not found');
             }
-            const geneFunction = await this.geneFunctionModel.findById({ id });
+            const strain = await this.strainModel.findById({ _id: id });
             return res.json(
                 sendResponse({
-                    data: geneFunction,
+                    data: strain,
                     message: 'success',
                     statusCode: HttpStatus.OK,
                 }),
@@ -64,19 +63,21 @@ export class GeneFunctionService {
         }
     }
 
-    async update(geneFunctionData: UpdateGeneFunctionDto, res: Response) {
+    async update(data: UpdateStrainDto, res: Response) {
         try {
-            if (!geneFunctionData?._id) {
+            if (!data?._id) {
                 throw new NotFoundException('Not found');
             }
-            const geneFunction = await this.geneFunctionModel.findByIdAndUpdate(
-                { _id: geneFunctionData._id },
-                { ...geneFunctionData },
+            const strain = await this.strainModel.findByIdAndUpdate(
+                {
+                    _id: data._id,
+                },
+                { ...data },
                 { new: true },
             );
             return res.json(
                 sendResponse({
-                    data: geneFunction,
+                    data: strain,
                     message: 'success',
                     statusCode: HttpStatus.OK,
                 }),
@@ -89,7 +90,10 @@ export class GeneFunctionService {
 
     async remove(id: string, res: Response) {
         try {
-            await this.geneFunctionModel.findByIdAndDelete({ _id: id });
+            if (!id) {
+                throw new NotFoundException('Not found');
+            }
+            await this.strainModel.findByIdAndDelete({ _id: id });
             return res.json(
                 sendResponse({
                     data: null,

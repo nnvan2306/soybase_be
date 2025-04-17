@@ -9,7 +9,7 @@ export class PanGeneSet {
     name: string;
 
     @Prop()
-    url_detail: string;
+    path_detail: string;
 }
 
 export const PanGeneSetSchema = SchemaFactory.createForClass(PanGeneSet);
