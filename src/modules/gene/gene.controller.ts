@@ -18,8 +18,13 @@ export class GeneController {
         return this.geneService.findList(names, res);
     }
     @Get()
-    findAll(@Res() res: Response) {
-        return this.geneService.findAll(res);
+    findAll(
+        @Res() res: Response,
+        @Query('textSearch') textSearch: string,
+        @Query('page') page: string,
+        @Query('pageSize') pageSize: string,
+    ) {
+        return this.geneService.findAll(res, textSearch, page, pageSize);
     }
 
     @Get(':id')

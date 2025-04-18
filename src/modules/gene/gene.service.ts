@@ -28,12 +28,28 @@ export class GeneService {
         }
     }
 
-    async findAll(res: Response) {
+    async findAll(res: Response, textSearch: string, page: string, pageSize: string) {
         try {
-            const genes = await this.geneModel.find();
+            const pageQuery = Number(page) ? Number(page) : 1;
+            const pageSizeQuery = Number(pageSize) ? Number(pageSize) : 10;
+            const skip = (pageQuery - 1) * pageSizeQuery;
+            const searchCondition = textSearch
+                ? {
+                      $or: [{ name: { $regex: textSearch, $options: 'i' } }],
+                  }
+                : {};
+            const [genes, totalItems] = await Promise.all([
+                this.geneModel.find(searchCondition).skip(skip).limit(pageSizeQuery).exec(),
+                this.geneModel.countDocuments(searchCondition),
+            ]);
             return res.json(
                 sendResponse({
-                    data: genes,
+                    data: {
+                        page: pageQuery,
+                        pageSize: pageSizeQuery,
+                        totalItems,
+                        data: genes,
+                    },
                     message: 'success',
                     statusCode: HttpStatus.OK,
                 }),

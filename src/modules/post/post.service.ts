@@ -99,7 +99,6 @@ export class PostService {
                     data: {
                         page: pageQuery,
                         pageSize: pageSizeQuery,
-                        totalItems,
                         totalPages,
                         data: posts,
                     },

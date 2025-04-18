@@ -9,8 +9,4 @@ export class CreateSpeciesDto {
     @IsString({ each: true })
     @IsOptional()
     gene_id: string[];
-
-    @IsString()
-    @IsNotEmpty()
-    gene_family: string;
 }

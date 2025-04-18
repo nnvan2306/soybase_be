@@ -41,8 +41,8 @@ export class Gene {
     @Prop({ default: 'Manihot' })
     genus: string;
 
-    @Prop()
-    species: string[];
+    @Prop({ type: [MongooseSchema.Types.ObjectId], ref: 'Species' })
+    species: MongooseSchema.Types.ObjectId[];
 
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: Strain.name, required: true })
     strain: string;
