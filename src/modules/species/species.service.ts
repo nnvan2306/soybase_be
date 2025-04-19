@@ -57,7 +57,8 @@ export class SpeciesService {
             if (!id) {
                 throw new NotFoundException('Not found');
             }
-            const data = await this.specieModel.findById({ _id: id }).populate('gene_id').exec();
+            const data = await this.specieModel.findById({ _id: id });
+            // .populate('gene_id').exec()
             return res.json(
                 sendResponse({
                     data: data,
@@ -101,7 +102,7 @@ export class SpeciesService {
             if (!id) {
                 throw new NotFoundException('Not found');
             }
-            await this.specieModel.findByIdAndDelete({ id });
+            await this.specieModel.findByIdAndDelete({ _id: id });
             return res.json(
                 sendResponse({
                     data: null,

@@ -3,6 +3,7 @@ import mongoose, { Document, Schema as MongooseSchema } from 'mongoose';
 import { GeneFamily } from './gene-family.schema';
 import { PanGeneSet } from './pan-gene-set.schema';
 import { Strain } from './strain.schema';
+import { Species } from './species.schema';
 
 export type GeneDocument = Gene & Document;
 
@@ -20,32 +21,33 @@ export class Gene {
     @Prop({ type: mongoose.Schema.Types.Mixed, required: true })
     identifier: {
         name: string;
-        path_detailo: string[];
+        path_detailo: string;
     };
 
     @Prop({ type: mongoose.Schema.Types.Mixed })
     location: {
         name: string;
-        path_detail: string[];
+        path_detail: string;
     };
 
     @Prop()
     description: string;
 
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: GeneFamily.name, required: true })
-    gene_family: string;
+    gene_family: MongooseSchema.Types.ObjectId;
 
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: PanGeneSet.name, required: true })
-    pan_gene_set: string;
+    pan_gene_set: MongooseSchema.Types.ObjectId;
 
     @Prop({ default: 'Manihot' })
     genus: string;
 
-    @Prop({ type: [MongooseSchema.Types.ObjectId], ref: 'Species' })
-    species: MongooseSchema.Types.ObjectId[];
+    @Prop({ type: MongooseSchema.Types.ObjectId, ref: Species.name, required: true })
+    // @Prop({ type: [MongooseSchema.Types.ObjectId], ref: 'Species' })
+    species: MongooseSchema.Types.ObjectId;
 
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: Strain.name, required: true })
-    strain: string;
+    strain: MongooseSchema.Types.ObjectId;
 }
 
 export const GeneSchema = SchemaFactory.createForClass(Gene);
