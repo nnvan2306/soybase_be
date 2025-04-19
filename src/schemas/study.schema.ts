@@ -6,7 +6,7 @@ export type StudyDocument = Study & Document;
 @Schema()
 export class Study {
     @Prop({ required: true })
-    name: string;
+    study_name: string;
 
     @Prop()
     link_detail_study: string;

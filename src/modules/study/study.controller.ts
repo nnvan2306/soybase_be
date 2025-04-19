@@ -1,34 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Query } from '@nestjs/common';
 import { StudyService } from './study.service';
 import { CreateStudyDto } from './dto/create-study.dto';
 import { UpdateStudyDto } from './dto/update-study.dto';
+import { Response } from 'express';
 
 @Controller('study')
 export class StudyController {
     constructor(private readonly studyService: StudyService) {}
 
     @Post()
-    create(@Body() createStudyDto: CreateStudyDto) {
-        return this.studyService.create(createStudyDto);
+    create(@Body() createStudyDto: CreateStudyDto, @Res() res: Response) {
+        return this.studyService.create(createStudyDto, res);
     }
 
     @Get()
-    findAll() {
-        return this.studyService.findAll();
+    findAll(@Res() res: Response, @Query('page') page: string, @Query('pageSize') pageSize: string) {
+        return this.studyService.findAll(res, page, pageSize);
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.studyService.findOne(+id);
+    findOne(@Param('id') id: string, @Res() res: Response) {
+        return this.studyService.findOne(id, res);
     }
 
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() updateStudyDto: UpdateStudyDto) {
-        return this.studyService.update(+id, updateStudyDto);
+    @Patch()
+    update(@Body() updateStudyDto: UpdateStudyDto, @Res() res: Response) {
+        return this.studyService.update(updateStudyDto, res);
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.studyService.remove(+id);
+    remove(@Param('id') id: string, @Res() res: Response) {
+        return this.studyService.remove(id, res);
     }
 }
