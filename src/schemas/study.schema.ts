@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Species } from './species.schema';
 
 export type StudyDocument = Study & Document;
 
@@ -28,6 +29,12 @@ export class Study {
 
     @Prop()
     genotypes: string;
+
+    @Prop({ type: MongooseSchema.Types.ObjectId, ref: Species.name, required: true })
+    species: string;
+
+    @Prop()
+    traits: string;
 }
 
 export const StudySchema = SchemaFactory.createForClass(Study);

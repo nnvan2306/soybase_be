@@ -14,8 +14,15 @@ export class StudyController {
     }
 
     @Get()
-    findAll(@Res() res: Response, @Query('page') page: string, @Query('pageSize') pageSize: string) {
-        return this.studyService.findAll(res, page, pageSize);
+    findAll(
+        @Res() res: Response,
+        @Query('page') page: string,
+        @Query('pageSize') pageSize: string,
+        @Query('study_type') study_type: string,
+        @Query('publication_id') publication_id: string,
+        @Query('author') author: string,
+    ) {
+        return this.studyService.findAll(res, page, pageSize, study_type, publication_id, author);
     }
 
     @Get(':id')

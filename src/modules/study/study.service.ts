@@ -7,6 +7,11 @@ import { Model } from 'mongoose';
 import { Response } from 'express';
 import { sendResponse } from 'src/helpers/response';
 
+type FilterType = {
+    study_type?: string;
+    publication_id?: string;
+    author?: string;
+};
 @Injectable()
 export class StudyService {
     constructor(@InjectModel(Study.name) private readonly studyModel: Model<StudyDocument>) {}
@@ -28,15 +33,31 @@ export class StudyService {
         }
     }
 
-    async findAll(res: Response, page: string, pageSize: string) {
+    async findAll(
+        res: Response,
+        page: string,
+        pageSize: string,
+        study_type: string,
+        publication_id: string,
+        author: string,
+    ) {
         try {
             const pageQuery = Number(page) ? Number(page) : 1;
             const pageSizeQuery = Number(pageSize) ? Number(pageSize) : 10;
             const skip = (pageQuery - 1) * pageSizeQuery;
-
+            const filter = {} as FilterType;
+            if (study_type) {
+                filter.study_type = study_type;
+            }
+            if (publication_id) {
+                filter.publication_id = publication_id;
+            }
+            if (author) {
+                filter.author = author;
+            }
             const [studies, totalItems] = await Promise.all([
-                this.studyModel.find().skip(skip).limit(pageSizeQuery).exec(),
-                this.studyModel.countDocuments(),
+                this.studyModel.find(filter).skip(skip).limit(pageSizeQuery).populate('species').exec(),
+                this.studyModel.countDocuments(filter),
             ]);
             const totalPages = Math.ceil(totalItems / pageSizeQuery);
             return res.json(

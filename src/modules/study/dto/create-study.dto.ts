@@ -32,4 +32,12 @@ export class CreateStudyDto {
     @IsNotEmpty()
     @IsString()
     genotypes: string;
+
+    @IsNotEmpty()
+    @IsString()
+    traits: string;
+
+    @IsNotEmpty()
+    @IsString()
+    species: string;
 }
