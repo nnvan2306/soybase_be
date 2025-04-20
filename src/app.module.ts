@@ -10,6 +10,7 @@ import { PanGeneSetModule } from './modules/pan_gene_set/pan_gene_set.module';
 import { PostModule } from './modules/post/post.module';
 import { StrainModule } from './modules/strain/strain.module';
 import { StudyModule } from './modules/study/study.module';
+import { SpeciesModule } from './modules/species/species.module';
 
 @Module({
     imports: [
@@ -23,6 +24,7 @@ import { StudyModule } from './modules/study/study.module';
         GeneFamilyModule,
         PanGeneSetModule,
         StrainModule,
+        SpeciesModule,
         DscensorModule,
     ],
     controllers: [AppController],

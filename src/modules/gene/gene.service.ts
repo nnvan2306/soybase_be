@@ -3,13 +3,30 @@ import { CreateGeneDto } from './dto/create-gene.dto';
 import { UpdateGeneDto } from './dto/update-gene.dto';
 import { Gene, GeneDocument } from 'src/schemas/gene.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Response } from 'express';
 import { sendResponse } from 'src/helpers/response';
+import { Species, SpeciesDocument } from 'src/schemas/species.schema';
+import { Strain, StrainDocument } from 'src/schemas/strain.schema';
+import { GeneFamily, GeneFamilyDocument } from 'src/schemas/gene-family.schema';
+
+type FilterType = {
+    species?: string | { $regex: string; $options: string } | Types.ObjectId;
+    strain?: string | { $regex: string; $options: string } | Types.ObjectId;
+    identifier?: string | { $regex: string; $options: string };
+    description?: string | { $regex: string; $options: string };
+    gene_family?: string | { $regex: string; $options: string } | Types.ObjectId;
+    textSearch?: string | { $regex: string; $options: string };
+};
 
 @Injectable()
 export class GeneService {
-    constructor(@InjectModel(Gene.name) private readonly geneModel: Model<GeneDocument>) {}
+    constructor(
+        @InjectModel(Gene.name) private readonly geneModel: Model<GeneDocument>,
+        @InjectModel(Species.name) private readonly speciesModel: Model<SpeciesDocument>,
+        @InjectModel(Strain.name) private readonly strainModel: Model<StrainDocument>,
+        @InjectModel(GeneFamily.name) private readonly geneFamilyModel: Model<GeneFamilyDocument>,
+    ) {}
 
     async create(geneData: CreateGeneDto, res: Response) {
         try {
@@ -28,19 +45,73 @@ export class GeneService {
         }
     }
 
-    async findAll(res: Response, textSearch: string, page: string, pageSize: string) {
+    async findAll(
+        res: Response,
+        textSearch: string,
+        page: string,
+        pageSize: string,
+        species: string,
+        strain: string,
+        identifier: string,
+        description: string,
+        gene_family: string,
+    ) {
         try {
             const pageQuery = Number(page) ? Number(page) : 1;
             const pageSizeQuery = Number(pageSize) ? Number(pageSize) : 10;
             const skip = (pageQuery - 1) * pageSizeQuery;
-            const searchCondition = textSearch
-                ? {
-                      $or: [{ name: { $regex: textSearch, $options: 'i' } }],
-                  }
-                : {};
+
+            const filter = {} as FilterType;
+
+            if (identifier && typeof identifier === 'string') {
+                filter['identifier.name'] = { $regex: identifier, $options: 'i' };
+            }
+            if (description && typeof description === 'string') {
+                filter.description = { $regex: description, $options: 'i' };
+            }
+            if (textSearch && typeof textSearch === 'string') {
+                filter.textSearch = { $regex: textSearch, $options: 'i' };
+            }
+            if (species && typeof species === 'string') {
+                if (Types.ObjectId.isValid(species)) {
+                    filter.species = new Types.ObjectId(species);
+                } else {
+                    const speciesDoc = await this.speciesModel.findOne({
+                        name: { $regex: species, $options: 'i' },
+                    });
+                    if (speciesDoc) {
+                        filter.species = speciesDoc._id as Types.ObjectId;
+                    }
+                }
+            }
+            if (strain && typeof strain === 'string') {
+                if (Types.ObjectId.isValid(strain)) {
+                    filter.strain = new Types.ObjectId(strain);
+                } else {
+                    const strainDoc = await this.strainModel.findOne({
+                        name: { $regex: strain, $options: 'i' },
+                    });
+                    if (strainDoc) {
+                        filter.strain = strainDoc._id as Types.ObjectId;
+                    }
+                }
+            }
+            if (gene_family && typeof gene_family === 'string') {
+                if (Types.ObjectId.isValid(gene_family)) {
+                    filter.gene_family = new Types.ObjectId(gene_family);
+                } else {
+                    const gene_familyDoc = await this.geneFamilyModel.findOne({
+                        name: { $regex: gene_family, $options: 'i' },
+                    });
+                    if (gene_familyDoc) {
+                        filter.gene_family = gene_familyDoc._id as Types.ObjectId;
+                    }
+                }
+            }
+
             const [genes, totalItems] = await Promise.all([
                 this.geneModel
-                    .find(searchCondition)
+                    .find(filter)
                     .skip(skip)
                     .limit(pageSizeQuery)
                     .populate([
@@ -50,7 +121,7 @@ export class GeneService {
                         { path: 'strain' },
                     ])
                     .exec(),
-                this.geneModel.countDocuments(searchCondition),
+                this.geneModel.countDocuments(filter),
             ]);
             return res.json(
                 sendResponse({

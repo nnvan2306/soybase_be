@@ -23,8 +23,23 @@ export class GeneController {
         @Query('textSearch') textSearch: string,
         @Query('page') page: string,
         @Query('pageSize') pageSize: string,
+        @Query('species') species: string,
+        @Query('strain') strain: string,
+        @Query('identifier') identifier: string,
+        @Query('description') description: string,
+        @Query('gene_family') gene_family: string,
     ) {
-        return this.geneService.findAll(res, textSearch, page, pageSize);
+        return this.geneService.findAll(
+            res,
+            textSearch,
+            page,
+            pageSize,
+            species,
+            strain,
+            identifier,
+            description,
+            gene_family,
+        );
     }
 
     @Get(':id')
