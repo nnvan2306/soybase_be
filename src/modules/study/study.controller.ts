@@ -21,8 +21,10 @@ export class StudyController {
         @Query('study_type') study_type: string,
         @Query('publication_id') publication_id: string,
         @Query('author') author: string,
+        @Query('traits') traits: string,
+        @Query('species') species: string,
     ) {
-        return this.studyService.findAll(res, page, pageSize, study_type, publication_id, author);
+        return this.studyService.findAll(res, page, pageSize, study_type, publication_id, author, traits, species);
     }
 
     @Get(':id')
