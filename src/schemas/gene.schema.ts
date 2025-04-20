@@ -21,7 +21,7 @@ export class Gene {
     @Prop({ type: mongoose.Schema.Types.Mixed, required: true })
     identifier: {
         name: string;
-        path_detailo: string;
+        path_detail: string;
     };
 
     @Prop({ type: mongoose.Schema.Types.Mixed })

@@ -39,7 +39,17 @@ export class GeneService {
                   }
                 : {};
             const [genes, totalItems] = await Promise.all([
-                this.geneModel.find(searchCondition).skip(skip).limit(pageSizeQuery).exec(),
+                this.geneModel
+                    .find(searchCondition)
+                    .skip(skip)
+                    .limit(pageSizeQuery)
+                    .populate([
+                        { path: 'gene_family' },
+                        { path: 'pan_gene_set' },
+                        { path: 'species' },
+                        { path: 'strain' },
+                    ])
+                    .exec(),
                 this.geneModel.countDocuments(searchCondition),
             ]);
             return res.json(
