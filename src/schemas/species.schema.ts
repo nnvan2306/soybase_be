@@ -4,6 +4,8 @@ import { Document } from 'mongoose';
 
 export type SpeciesDocument = Species & Document;
 
+// Định nghĩa schema cho Species
+// @Schema({ collection: 'species' }) // Đặt tên collection trong MongoDB là 'species'
 @Schema()
 export class Species {
     @Prop({ required: true })

@@ -1,15 +1,26 @@
 import { BadRequestException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateGeneDto } from './dto/create-gene.dto';
-import { UpdateGeneDto } from './dto/update-gene.dto';
-import { Gene, GeneDocument } from 'src/schemas/gene.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
 import { Response } from 'express';
+import { Model, Types } from 'mongoose';
 import { sendResponse } from 'src/helpers/response';
+import { GeneFamily, GeneFamilyDocument } from 'src/schemas/gene-family.schema';
+import { Gene, GeneDocument } from 'src/schemas/gene.schema';
 import { Species, SpeciesDocument } from 'src/schemas/species.schema';
 import { Strain, StrainDocument } from 'src/schemas/strain.schema';
-import { GeneFamily, GeneFamilyDocument } from 'src/schemas/gene-family.schema';
+import { CreateGeneDto } from './dto/create-gene.dto';
+import { UpdateGeneDto } from './dto/update-gene.dto';
 
+// kiểu dữ liệu cho các tham số tìm kiếm
+// species, strain, identifier, description, gene_family
+// có thể là chuỗi hoặc ObjectId
+// textSearch là chuỗi và có thể tìm kiếm trong tất cả các trường
+// gene_family là ObjectId hoặc chuỗi
+// identifier là chuỗi và có thể tìm kiếm trong trường name
+// description là chuỗi và có thể tìm kiếm trong trường description
+// textSearch là chuỗi và có thể tìm kiếm trong tất cả các trường
+// species là ObjectId hoặc chuỗi và có thể tìm kiếm trong trường name
+// strain là ObjectId hoặc chuỗi và có thể tìm kiếm trong trường name
+// gene_family là ObjectId hoặc chuỗi và có thể tìm kiếm trong trường name
 type FilterType = {
     species?: string | { $regex: string; $options: string } | Types.ObjectId;
     strain?: string | { $regex: string; $options: string } | Types.ObjectId;
@@ -19,15 +30,21 @@ type FilterType = {
     textSearch?: string | { $regex: string; $options: string };
 };
 
+// Service này xử lý các logic nghiệp vụ liên quan đến gene
+// Nó định nghĩa các phương thức để tương tác với cơ sở dữ liệu thông qua model Gene
 @Injectable()
 export class GeneService {
-    constructor(
-        @InjectModel(Gene.name) private readonly geneModel: Model<GeneDocument>,
-        @InjectModel(Species.name) private readonly speciesModel: Model<SpeciesDocument>,
-        @InjectModel(Strain.name) private readonly strainModel: Model<StrainDocument>,
-        @InjectModel(GeneFamily.name) private readonly geneFamilyModel: Model<GeneFamilyDocument>,
-    ) {}
 
+    // Inject model Gene vào service để sử dụng các phương thức của mongoose
+    constructor(
+        @InjectModel(Gene.name) private readonly geneModel: Model<GeneDocument>, // model gene
+        @InjectModel(Species.name) private readonly speciesModel: Model<SpeciesDocument>, // model species
+        @InjectModel(Strain.name) private readonly strainModel: Model<StrainDocument>, // model strain
+        @InjectModel(GeneFamily.name) private readonly geneFamilyModel: Model<GeneFamilyDocument>, // model gene family
+    ) { }
+
+    // Tạo mới gene
+    // Endpoint này sẽ nhận dữ liệu từ client và gọi phương thức create trong GeneService để lưu gene vào cơ sở dữ liệu
     async create(geneData: CreateGeneDto, res: Response) {
         try {
             const gene = new this.geneModel({ ...geneData });
@@ -45,6 +62,8 @@ export class GeneService {
         }
     }
 
+    // Lấy danh sách gene theo tên
+    // Endpoint này sẽ nhận danh sách tên gene từ client và gọi phương thức findList trong GeneService để tìm kiếm các gene tương ứng
     async findAll(
         res: Response,
         textSearch: string,
@@ -141,6 +160,8 @@ export class GeneService {
         }
     }
 
+    // Lấy chi tiết gene theo id
+    // Endpoint này sẽ nhận id gene từ client và gọi phương thức findOne trong GeneService để lấy chi tiết gene
     async findOne(id: string, res: Response) {
         try {
             if (!id) {
@@ -161,6 +182,8 @@ export class GeneService {
         }
     }
 
+    // Lấy danh sách gene theo tên
+    // Endpoint này sẽ nhận danh sách tên gene từ client và gọi phương thức findList trong GeneService để tìm kiếm các gene tương ứng
     async findList(names: string[], res: Response) {
         try {
             if (!names || names.length === 0) {
@@ -185,6 +208,8 @@ export class GeneService {
         }
     }
 
+    // Cập nhật gene theo id
+    // Endpoint này sẽ nhận dữ liệu cập nhật từ client và gọi phương thức update trong GeneService để cập nhật gene
     async update(geneData: UpdateGeneDto, res: Response) {
         try {
             if (!geneData?._id) {
@@ -204,6 +229,8 @@ export class GeneService {
         }
     }
 
+    // Xóa gene theo id
+    // Endpoint này sẽ nhận id gene từ client và gọi phương thức remove trong GeneService để xóa gene
     async remove(id: string, res: Response) {
         try {
             if (!id) {

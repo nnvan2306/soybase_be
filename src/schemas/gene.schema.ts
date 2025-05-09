@@ -2,11 +2,14 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document, Schema as MongooseSchema } from 'mongoose';
 import { GeneFamily } from './gene-family.schema';
 import { PanGeneSet } from './pan-gene-set.schema';
-import { Strain } from './strain.schema';
 import { Species } from './species.schema';
+import { Strain } from './strain.schema';
 
+// kiểu dữ liệu cho Gene
 export type GeneDocument = Gene & Document;
 
+// Định nghĩa schema cho Gene
+// @Schema({ collection: 'gene' }) // Đặt tên collection trong MongoDB là 'gene'
 @Schema()
 export class Gene {
     @Prop({ required: true })

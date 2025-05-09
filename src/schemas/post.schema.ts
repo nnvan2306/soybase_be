@@ -1,8 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
+// kiểu dữ liệu cho Post
+
 export type PostDocument = HydratedDocument<Post>;
 
+// Định nghĩa schema cho Post
+// @Schema({ collection: 'post' }) // Đặt tên collection trong MongoDB là 'post'
 @Schema({
     timestamps: true,
 })

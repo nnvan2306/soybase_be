@@ -1,6 +1,9 @@
 import { Type } from 'class-transformer';
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
+// Class này để định nghĩa DTO (Data Transfer Object) cho gene
+// DTO này sẽ được sử dụng để xác thực dữ liệu đầu vào khi tạo hoặc cập nhật gene
+// Nó sử dụng các decorator từ class-validator để xác thực các trường dữ liệu
 class Identifier {
     @IsString()
     @IsNotEmpty()

@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common';
-import { GeneService } from './gene.service';
-import { GeneController } from './gene.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Gene, GeneSchema } from 'src/schemas/gene.schema';
-import { Strain, StrainSchema } from 'src/schemas/strain.schema';
-import { Species, SpeciesSchema } from 'src/schemas/species.schema';
 import { GeneFamily, GeneFamilySchema } from 'src/schemas/gene-family.schema';
+import { Gene, GeneSchema } from 'src/schemas/gene.schema';
+import { Species, SpeciesSchema } from 'src/schemas/species.schema';
+import { Strain, StrainSchema } from 'src/schemas/strain.schema';
+import { GeneController } from './gene.controller';
+import { GeneService } from './gene.service';
 
+// Module này định nghĩa các thành phần của module gene
+// Nó bao gồm các controller, service và schema cần thiết để xử lý các yêu cầu liên quan đến gene
 @Module({
     imports: [
-        MongooseModule.forFeatureAsync([
+        MongooseModule.forFeatureAsync([ // Kết nối đến MongoDB và định nghĩa schema cho gene
             {
                 name: Gene.name,
                 useFactory: () => {
@@ -40,7 +42,7 @@ import { GeneFamily, GeneFamilySchema } from 'src/schemas/gene-family.schema';
             },
         ]),
     ],
-    controllers: [GeneController],
-    providers: [GeneService],
+    controllers: [GeneController], // Đăng ký controller để xử lý các yêu cầu HTTP
+    providers: [GeneService], // Đăng ký service để xử lý các logic nghiệp vụ
 })
-export class GeneModule {}
+export class GeneModule { }

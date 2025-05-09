@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
-import { StudyService } from './study.service';
-import { StudyController } from './study.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Study, StudySchema } from 'src/schemas/study.schema';
 import { Species, SpeciesSchema } from 'src/schemas/species.schema';
+import { Study, StudySchema } from 'src/schemas/study.schema';
+import { StudyController } from './study.controller';
+import { StudyService } from './study.service';
 
+// Module này định nghĩa các thành phần của module study
+// Nó bao gồm các controller, service và schema cần thiết để xử lý các yêu cầu liên quan đến study
 @Module({
     imports: [
-        MongooseModule.forFeatureAsync([
+        MongooseModule.forFeatureAsync([ // Kết nối đến MongoDB và định nghĩa schema cho study
             {
                 name: Study.name,
                 useFactory: () => {
@@ -24,7 +26,7 @@ import { Species, SpeciesSchema } from 'src/schemas/species.schema';
             },
         ]),
     ],
-    controllers: [StudyController],
-    providers: [StudyService],
+    controllers: [StudyController], // Đăng ký controller để xử lý các yêu cầu HTTP
+    providers: [StudyService], // Đăng ký service để xử lý các logic nghiệp vụ
 })
-export class StudyModule {}
+export class StudyModule { }

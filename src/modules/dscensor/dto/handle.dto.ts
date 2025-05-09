@@ -1,5 +1,8 @@
 import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
 
+// Class này để định nghĩa DTO (Data Transfer Object) cho dscensor
+// DTO này sẽ được sử dụng để xác thực dữ liệu đầu vào khi tạo hoặc cập nhật dscensor
+// Nó sử dụng các decorator từ class-validator để xác thực các trường dữ liệu
 export class DscensorDto {
     _id: string;
 

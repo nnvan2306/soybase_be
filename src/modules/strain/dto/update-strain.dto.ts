@@ -1,7 +1,8 @@
 import { PartialType } from '@nestjs/swagger';
-import { CreateStrainDto } from './create-strain.dto';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { CreateStrainDto } from './create-strain.dto';
 
+// Class này để định nghĩa DTO (Data Transfer Object) cho strain
 export class UpdateStrainDto extends PartialType(CreateStrainDto) {
     @IsNotEmpty()
     @IsString()

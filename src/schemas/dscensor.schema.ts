@@ -2,8 +2,11 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 // import { Gene } from './gene.schema';
 
+// kiểu dữ liệu cho Dscensor
 export type DscensorDocument = Dscensor & Document;
 
+// Định nghĩa schema cho Dscensor
+// @Schema({ collection: 'dscensor' }) // Đặt tên collection trong MongoDB là 'dscensor'
 @Schema()
 export class Dscensor {
     @Prop({ required: true })
@@ -65,4 +68,5 @@ export class Dscensor {
     url_download: string;
 }
 
+// @Schema({ collection: 'dscensor' }) // Đặt tên collection trong MongoDB là 'dscensor'
 export const DscensorSchema = SchemaFactory.createForClass(Dscensor);

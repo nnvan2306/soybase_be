@@ -4,6 +4,8 @@ import { Species } from './species.schema';
 
 export type StudyDocument = Study & Document;
 
+// Định nghĩa schema cho Study
+// @Schema({ collection: 'study' }) // Đặt tên collection trong MongoDB là 'study'
 @Schema()
 export class Study {
     @Prop({ required: true })

@@ -1,13 +1,15 @@
 import { BadRequestException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateStudyDto } from './dto/create-study.dto';
-import { UpdateStudyDto } from './dto/update-study.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Study, StudyDocument } from 'src/schemas/study.schema';
-import { Model, Types } from 'mongoose';
 import { Response } from 'express';
+import { Model, Types } from 'mongoose';
 import { sendResponse } from 'src/helpers/response';
 import { Species, SpeciesDocument } from 'src/schemas/species.schema';
+import { Study, StudyDocument } from 'src/schemas/study.schema';
+import { CreateStudyDto } from './dto/create-study.dto';
+import { UpdateStudyDto } from './dto/update-study.dto';
 
+// Kiểu dữ liệu cho các tham số tìm kiếm
+// Các tham số này sẽ được sử dụng để lọc danh sách study trong phương thức findAll
 type FilterType = {
     study_type?: string | { $regex: string; $options: string };
     publication_id?: string | { $regex: string; $options: string };
@@ -15,13 +17,19 @@ type FilterType = {
     traits?: string | { $regex: string; $options: string };
     species?: string | { $regex: string; $options: string } | Types.ObjectId;
 };
+
+// StudyService là một service trong NestJS để xử lý các logic nghiệp vụ liên quan đến study
+// Nó định nghĩa các phương thức để tương tác với cơ sở dữ liệu thông qua model Study
 @Injectable()
 export class StudyService {
+    // Inject model Study và Species vào service để sử dụng các phương thức của mongoose
     constructor(
-        @InjectModel(Study.name) private readonly studyModel: Model<StudyDocument>,
-        @InjectModel(Species.name) private readonly speciesModel: Model<SpeciesDocument>,
-    ) {}
+        @InjectModel(Study.name) private readonly studyModel: Model<StudyDocument>, // model để tương tác với collection study
+        @InjectModel(Species.name) private readonly speciesModel: Model<SpeciesDocument>, // model để tương tác với collection species
+    ) { }
 
+    // Tạo mới study
+    // Phương thức này sẽ nhận dữ liệu từ client và gọi model Study để lưu study vào cơ sở dữ liệu
     async create(createStudyDto: CreateStudyDto, res: Response) {
         try {
             const study = new this.studyModel({ ...createStudyDto });
@@ -39,6 +47,8 @@ export class StudyService {
         }
     }
 
+    // Lấy danh sách tất cả study với các tham số tìm kiếm
+    // Phương thức này sẽ nhận các tham số tìm kiếm từ client và gọi model Study để lấy danh sách study từ cơ sở dữ liệu
     async findAll(
         res: Response,
         page: string,
@@ -103,6 +113,8 @@ export class StudyService {
         }
     }
 
+    // Lấy chi tiết study theo id
+    // Phương thức này sẽ nhận id study từ client và gọi model Study để tìm study theo id từ cơ sở dữ liệu
     async findOne(id: string, res: Response) {
         try {
             if (!id) {
@@ -122,6 +134,8 @@ export class StudyService {
         }
     }
 
+    // Cập nhật study theo id
+    // Phương thức này sẽ nhận dữ liệu cập nhật từ client và gọi model Study để cập nhật study theo id từ cơ sở dữ liệu
     async update(updateStudyDto: UpdateStudyDto, res: Response) {
         try {
             if (!updateStudyDto._id) {
@@ -145,6 +159,8 @@ export class StudyService {
         }
     }
 
+    // Xóa study theo id
+    // Phương thức này sẽ nhận id study từ client và gọi model Study để xóa study theo id từ cơ sở dữ liệu
     async remove(id: string, res: Response) {
         try {
             await this.studyModel.findByIdAndDelete({ _id: id });
